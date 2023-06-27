@@ -173,7 +173,7 @@ def main():
 model_name_list = ['RealESRGAN_x4plus','RealESRNet_x4plus','RealESRGAN_x2plus','RealESRNet_x2plus','RealESRGAN_x4','RealESRNet_x4','RealESRGAN_x2','realesr-general-x4v3']
 
 def create_upscale_image(input_path : str,output_path : str,image_extension : str,denoise_strength :float,outscale :int,model_name :str = 'realesr-general-x4v'):
-    file_url=[]
+
 
     model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=32, upscale=4, act_type='prelu')
     netscale = 4
@@ -189,7 +189,7 @@ def create_upscale_image(input_path : str,output_path : str,image_extension : st
     if not os.path.isfile(model_path):
         ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         for url in file_url:
-            print(file_url)
+
             # model_path will be updated
             model_path = load_file_from_url(
                 url=url, model_dir=os.path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
