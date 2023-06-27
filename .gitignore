@@ -6,9 +6,9 @@ tb_logger/*
 wandb/*
 tmp/*
 weights/*
-
+output_images/*
 env
-
+gfpgan
 version.py
 
 # Byte-compiled / optimized / DLL files

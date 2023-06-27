@@ -41,39 +41,40 @@ def upload(file: UploadFile = File(...), outscale: int = Query(...), denoise_str
         # return {"message": "Denoise strength must be between 0 and 1"}
 
     # get the name of the file
-    try :
+    # try :
 
-        save_directory = BASE_DIR+"/output_images"
-        # create the directory if it doesn't exist
-        if not os.path.exists(save_directory):
-            os.makedirs(save_directory)
-
-
-        save_filename = generate_filename(file.filename)
-
-        # Create the save path by joining the directory and filename
-        save_path = os.path.join(save_directory, save_filename)
-
-        with open(save_path, 'wb') as f:
-            while contents := file.file.read(1024 * 1024):
-                f.write(contents)
+    save_directory = BASE_DIR+"/output_images"
+    # create the directory if it doesn't exist
+    if not os.path.exists(save_directory):
+        os.makedirs(save_directory)
 
 
-        create_upscaled_image_file_path=create_upscale_image(save_path,save_directory,"png",denoise_strength,outscale)
+    save_filename = generate_filename(file.filename)
+
+    # Create the save path by joining the directory and filename
+    save_path = os.path.join(save_directory, save_filename)
+
+    with open(save_path, 'wb') as f:
+        while contents := file.file.read(1024 * 1024):
+            f.write(contents)
 
 
-    except Exception:
-        return JSONResponse(status_code=400, content= {"message": "There was an error uploading the file"})
+    create_upscaled_image_file_path=create_upscale_image(save_path,save_directory,"png",denoise_strength,outscale)
+    res= FileResponse(create_upscaled_image_file_path)
+    return res
+
+    # except Exception:
+    #     return JSONResponse(status_code=400, content= {"message": "There was an error uploading the file"})
 
 
-    finally:
-        file.file.close()
+    # finally:
+    #     file.file.close()
 
-        res= FileResponse(create_upscaled_image_file_path)
-        # delte the files
-        os.remove(save_path)
-        # os.remove(create_upscaled_image_file_path)
-        return res
+    #     # res= FileResponse(create_upscaled_image_file_path)
+    #     # # delte the files
+    #     # os.remove(save_path)
+    #     # # os.remove(create_upscaled_image_file_path)
+    #     # return res
 
 
 

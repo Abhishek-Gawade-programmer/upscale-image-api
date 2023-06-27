@@ -14,11 +14,15 @@ def main():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=str, default='inputs', help='Input image or folder')
+
+
+
+
     parser.add_argument(
         '-n',
         '--model_name',
         type=str,
-        default='RealESRGAN_x4plus',
+        default='realesr-general-x4v3',
         help=('Model names: RealESRGAN_x4plus | RealESRNet_x4plus | RealESRGAN_x4plus_anime_6B | RealESRGAN_x2plus | '
               'realesr-animevideov3 | realesr-general-x4v3'))
     parser.add_argument('-o', '--output', type=str, default='results', help='Output folder')
@@ -164,36 +168,19 @@ def main():
 
 
 
-def create_upscale_image(input_path : str,output_path : str,image_extension : str,denoise_strength :float,outscale :int):
 
-    model_name = "RealESRGAN_x4plus"
-    if model_name == 'RealESRGAN_x4plus':  # x4 RRDBNet model
-        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
-        netscale = 4
-        file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
-    elif model_name == 'RealESRNet_x4plus':  # x4 RRDBNet model
-        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
-        netscale = 4
-        file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth']
-    elif model_name == 'RealESRGAN_x4plus_anime_6B':  # x4 RRDBNet model with 6 blocks
-        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=6, num_grow_ch=32, scale=4)
-        netscale = 4
-        file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth']
-    elif model_name == 'RealESRGAN_x2plus':  # x2 RRDBNet model
-        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
-        netscale = 2
-        file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth']
-    elif model_name == 'realesr-animevideov3':  # x4 VGG-style model (XS size)
-        model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type='prelu')
-        netscale = 4
-        file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth']
-    elif model_name == 'realesr-general-x4v3':  # x4 VGG-style model (S size)
-        model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=32, upscale=4, act_type='prelu')
-        netscale = 4
-        file_url = [
-            'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-wdn-x4v3.pth',
-            'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth'
-        ]
+
+model_name_list = ['RealESRGAN_x4plus','RealESRNet_x4plus','RealESRGAN_x2plus','RealESRNet_x2plus','RealESRGAN_x4','RealESRNet_x4','RealESRGAN_x2','realesr-general-x4v3']
+
+def create_upscale_image(input_path : str,output_path : str,image_extension : str,denoise_strength :float,outscale :int,model_name :str = 'realesr-general-x4v'):
+    file_url=[]
+
+    model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=32, upscale=4, act_type='prelu')
+    netscale = 4
+    file_url = [
+        'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-wdn-x4v3.pth',
+        'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth'
+    ]
 
 
 
@@ -202,12 +189,10 @@ def create_upscale_image(input_path : str,output_path : str,image_extension : st
     if not os.path.isfile(model_path):
         ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         for url in file_url:
+            print(file_url)
             # model_path will be updated
             model_path = load_file_from_url(
                 url=url, model_dir=os.path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
-
-
-
 
 
      # use dni to control the denoise strength
@@ -286,5 +271,5 @@ def create_upscale_image(input_path : str,output_path : str,image_extension : st
 
 
 if __name__ == '__main__':
-    create_upscale_image("/home/abhishek/Pictures/t.png","/home/abhishek/Downloads/Real-ESRGAN-0.3.0/output_images","png",0,2)
-    # main()
+    # create_upscale_image("/home/abhishek/Downloads/Real-ESRGAN-0.3.0/input.jpg","/home/abhishek/Downloads/Real-ESRGAN-0.3.0/output_images","png",0,2)
+    main()
